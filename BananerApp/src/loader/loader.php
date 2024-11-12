@@ -42,7 +42,6 @@
     echo "Eliminando duplicados...\n";
     remove_duplicates('files/Prerrequisitos.csv', 'files/Prerrequisitos_unicos.csv', [0]);
     echo "Prerrequisitos unicos LISTO\n";
-    echo "Notas unicos LISTO\n";
     remove_duplicates('files/Planes.csv', 'files/Planes_unicos.csv', [0]);
     echo "Planes unicos LISTO\n";
     remove_duplicates('files/Asignaturas.csv', 'files/Asignaturas_unicas.csv', [1]);
@@ -54,6 +53,9 @@
     remove_duplicates('files/Docentes_Planificados.csv', 'files/Docentes_Planificados_unicos.csv', [0]);
     echo "Docentes_Planificados unicos LISTO\n";
 
+    // Ejecutar el script para sincronizar la tabla de personas
+    echo "Sincronizando tabla de personas...\n";
+    require_once('sync_personas.php');
 
     require_once('config/connection.php');
     require_once('create_tables.php');

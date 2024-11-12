@@ -10,7 +10,7 @@
 
         } catch (Exception $e) {
             $database-> rollBack();
-            echo "Error al insertar en la tabla $tabla: " . $e->getMessage();
+            //echo "Error al insertar en la tabla $tabla: " . $e->getMessage();
         } 
     }
 ?>

@@ -5,7 +5,7 @@
     $tabla_actual = "";
 
     // Llamar a la función para poblar la tabla Personas
-    //poblar_tabla_personas($db);
+    poblar_tabla_personas($db);
 
     try {
         // Cambiar el datestyle para la sesión actual
