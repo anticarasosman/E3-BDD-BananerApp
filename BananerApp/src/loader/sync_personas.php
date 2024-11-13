@@ -8,9 +8,20 @@ if (file_exists($flag_file)) {
 }
 
 // Conexión a la base de datos externa
-$conn = pg_connect(("host=localhost port=5432 dbname=e3profesores user=grupo49e3 password=contraseña"));
+$conn = pg_connect(("host=146.155.13.71 port=5432 dbname=e3profesores user=grupo49e3 password=pinkiynegra1"));
 if (!$conn) {
     die("Conexion fallida: " . pg_last_error());
+}
+
+// Listar todas las tablas en la base de datos externa
+$tables_result = pg_query($conn, "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
+if (!$tables_result) {
+    die("Error en la consulta de tablas: " . pg_last_error());
+}
+
+echo "Tablas en la base de datos externa:\n";
+while ($table = pg_fetch_assoc($tables_result)) {
+    echo $table['table_name'] . "\n";
 }
 
 // Consulta a la base de datos externa
@@ -27,8 +38,19 @@ if (!$local_conn) {
 
 // Iterar sobre los resultados y actualizar la base de datos local "Personas"
 while ($row = pg_fetch_assoc($result)) {
-    // Assuming $row contains relevant fields you need
-    $update_query = "UPDATE Personas SET column1 = '{$row['column1']}', column2 = '{$row['column2']}' WHERE condition";
+    $update_query = "
+        INSERT INTO personas (RUN, DV, Nombres, Apellido_Paterno, Apellido_Materno, Nombre_Completo, Telefono, Correo_Personal, Correo_Institucional)
+        VALUES ('{$row['run']}', '', '{$row['nombre']}', '{$row['apellido1']}', '{$row['apellido2']}', '{$row['nombre']} {$row['apellido1']} {$row['apellido2']}', '{$row['telefono']}', '{$row['email_personal']}', '{$row['email_institucional']}')
+        ON CONFLICT (RUN) DO UPDATE SET
+            DV = EXCLUDED.DV,
+            Nombres = EXCLUDED.Nombres,
+            Apellido_Paterno = EXCLUDED.Apellido_Paterno,
+            Apellido_Materno = EXCLUDED.Apellido_Materno,
+            Nombre_Completo = EXCLUDED.Nombre_Completo,
+            Telefono = EXCLUDED.Telefono,
+            Correo_Personal = EXCLUDED.Correo_Personal,
+            Correo_Institucional = EXCLUDED.Correo_Institucional;
+    ";
     $update_result = pg_query($local_conn, $update_query);
     if (!$update_result) {
         echo "Error al actualizar tabla Personas: " . pg_last_error() . "\n";

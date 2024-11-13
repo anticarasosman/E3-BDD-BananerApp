@@ -53,12 +53,12 @@
     remove_duplicates('files/Docentes_Planificados.csv', 'files/Docentes_Planificados_unicos.csv', [0]);
     echo "Docentes_Planificados unicos LISTO\n";
 
-    // Ejecutar el script para sincronizar la tabla de personas
-    echo "Sincronizando tabla de personas...\n";
-    require_once('sync_personas.php');
-
     require_once('config/connection.php');
     require_once('create_tables.php');
     require_once('poblate_tables.php');
+
+    // Ejecutar el script para sincronizar la tabla de personas
+    echo "Sincronizando tabla de personas...\n";
+    require_once('sync_personas.php');
     echo "TODO LISTO\n";
 ?>
