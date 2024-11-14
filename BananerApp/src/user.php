@@ -32,7 +32,7 @@ include('templates/header.html');
 
 
 
-
+  
 
 
   <p class="prompt">Porcentaje de aprobacion por curso</p>
@@ -45,6 +45,12 @@ include('templates/header.html');
   <br>
 
 
+  <h1>CONSULTAS</h1>
+  <a href="consulta_4.php">
+    <button>Ir a la consulta</button>
+
+
+  </a>
   
 
 

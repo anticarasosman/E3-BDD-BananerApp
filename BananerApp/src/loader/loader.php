@@ -58,7 +58,7 @@
     require_once('poblate_tables.php');
 
     // Ejecutar el script para sincronizar la tabla de personas
-    echo "Sincronizando tabla de personas...\n";
-    require_once('sync_personas.php');
+    //echo "Sincronizando tabla de personas...\n";
+    //require_once('sync_personas.php');
     echo "TODO LISTO\n";
 ?>
