@@ -15,4 +15,17 @@ foreach($tablas_iniciales as $tabla => $atributos) {
         echo "Error al crear la tabla $tabla: " . $e->getMessage();
     }
 }
+// Crear tablas temporales
+foreach($tablas_temporales as $tabla => $atributos) {
+    try {
+        echo "Creando tabla temporal $tabla...\n";
+        $db->beginTransaction();
+        $createTableQuery = "CREATE TEMP TABLE IF NOT EXISTS $tabla ($tablas_temporales[$tabla]);";
+        $db->exec($createTableQuery);
+        $db->commit();
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo "Error al crear la tabla temporal $tabla: " . $e->getMessage();
+    }
+}
 ?>
