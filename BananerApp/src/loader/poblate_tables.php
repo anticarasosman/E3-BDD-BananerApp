@@ -38,9 +38,6 @@
                     if ($tabla == "Notas") {
                         Corregir_tabla_Notas($data);
                     }
-                    if ($tabla == "Docentes_Planificados") {
-                        Corregir_tabla_Docentes_Planificados($data);
-                    }
                     if ($tabla == "Planeacion") {
                         Corregir_tabla_Planeacion($data);
                     }
@@ -315,12 +312,6 @@
     function poblar_tabla_personas($db) {
         try {
             echo "Poblando tabla Personas...\n";
-
-            // Poblar desde la tabla Docentes
-            $query = "INSERT INTO personas (RUN, DV, Nombres, Apellido_Paterno, Apellido_Materno, Nombre_Completo, Telefono, Correo_Personal, Correo_Institucional)
-                      SELECT RUN, '', NOMBRE, APELLIDO_PATERNO, '', NOMBRE || ' ' || APELLIDO_PATERNO, TELEFONO, EMAIL_PERSONAL, EMAIL_INSTITUCIONAL
-                      FROM docentes_planificados";
-            $db->exec($query);
 
             // Poblar desde la tabla Estudiantes
             $query = "INSERT INTO personas (RUN, DV, Nombres, Apellido_Paterno, Apellido_Materno, Nombre_Completo, Telefono, Correo_Personal, Correo_Institucional)
