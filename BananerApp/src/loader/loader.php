@@ -52,61 +52,6 @@ echo "Sincronizando tabla de personas...\n";
 require_once('sync_personas.php');
 echo "TODO LISTO\n";
 
-// Verificar si la tabla temporal 'acta' fue creada
-try {
-    $result = $db->query("SELECT 1 FROM acta LIMIT 1");
-    if ($result !== false) {
-        echo "La tabla temporal 'acta' fue creada correctamente.\n";
-    }
-} catch (Exception $e) {
-    die("Error: La tabla temporal 'acta' no fue creada. " . $e->getMessage());
-}
-
-// Leer el archivo CSV y cargar los datos en la tabla temporal 'acta'
-$csvFile = fopen('archivos_E3/notas adivinacion I.csv', 'r');
-if ($csvFile === false) {
-    die("No se pudo abrir el archivo CSV.");
-}
-
-echo "Iniciando la transacción para insertar datos en la tabla temporal 'acta'...\n";
-
-// Iniciar la transacción
-$db->beginTransaction();
-
-try {
-    // Leer y validar los datos del CSV
-    $lineNumber = 0;
-    while (($data = fgetcsv($csvFile, 1000, ";")) !== FALSE) {
-        $lineNumber++;
-        if ($lineNumber == 1) continue; // Saltar la cabecera
-
-        $numero_de_alumno = $data[0];
-        $run = $data[1];
-        $asignatura = $data[2];
-        $seccion = $data[3];
-        $periodo = $data[4];
-        $oportunidad_dic = str_replace(',', '.', $data[5]);
-        $oportunidad_mar = isset($data[6]) ? str_replace(',', '.', $data[6]) : NULL;
-
-        // Validar las notas
-        if (!is_numeric($oportunidad_dic) || ($oportunidad_mar !== NULL && !is_numeric($oportunidad_mar))) {
-            throw new Exception("Nota de $numero_de_alumno contiene un valor erróneo, corríjalo manualmente en el archivo de origen y vuelva a cargar.");
-        }
-
-        // Insertar los datos en la tabla temporal
-        $insertQuery = $db->prepare("INSERT INTO acta (numero_de_alumno, run, asignatura, seccion, periodo, oportunidad_dic, oportunidad_mar) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $insertQuery->execute([$numero_de_alumno, $run, $asignatura, $seccion, $periodo, $oportunidad_dic, $oportunidad_mar]);
-    }
-
-    // Confirmar la transacción
-    $db->commit();
-    echo "Datos insertados correctamente en la tabla temporal 'acta'.";
-} catch (Exception $e) {
-    // Revertir la transacción en caso de error
-    $db->rollBack();
-    echo "Error al insertar datos: " . $e->getMessage();
-}
-
 // Cerrar el archivo CSV
 fclose($csvFile);
 ?>

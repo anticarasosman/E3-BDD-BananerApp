@@ -4,6 +4,7 @@ $flag_file = 'sync_done.flag';
 // Verificar si la sincronización ya se ha realizado
 if (file_exists($flag_file)) {
     echo "La sincronización ya se ha realizado.\n";
+    echo "TODO LISTO";
     exit;
 }
 

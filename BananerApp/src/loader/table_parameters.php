@@ -140,15 +140,4 @@ $tablas_iniciales = array(
     password VARCHAR(255) NOT NULL, 
     role VARCHAR(50) NOT NULL',
 );
-
-$tablas_temporales = array(
-    'acta' => 
-        'numero_de_alumno INT,
-        run VARCHAR(10),
-        asignatura VARCHAR(10),
-        seccion INT,
-        periodo VARCHAR(7),
-        oportunidad_dic FLOAT,
-        oportunidad_mar FLOAT',
-);
 ?>
