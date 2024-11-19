@@ -20,7 +20,7 @@ foreach($tablas_temporales as $tabla => $atributos) {
     try {
         echo "Creando tabla temporal $tabla...\n";
         $db->beginTransaction();
-        $createTableQuery = "CREATE TEMP TABLE IF NOT EXISTS $tabla ($tablas_temporales[$tabla]);";
+        $createTableQuery = "CREATE TEMPORARY TABLE IF NOT EXISTS $tabla ($atributos);";
         $db->exec($createTableQuery);
         $db->commit();
     } catch (Exception $e) {
