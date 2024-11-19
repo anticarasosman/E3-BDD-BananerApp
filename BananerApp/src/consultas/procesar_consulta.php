@@ -90,6 +90,47 @@ try{
     $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
 
 
+
+    
+
+
+
+
+    echo "<h1>Resultados </h1>";
+
+    if ($resultados){
+
+        echo "<table border = '1'>";
+
+        echo "<tr>";
+
+        foreach(array_keys($resultados[0])as $column){
+
+            echo "<th>$column</th>";
+        }
+
+        echo "<tr>";
+
+
+
+        foreach($resultados as $file){
+            echo "<tr>";
+            
+
+            foreach($file as $value){
+                
+                echo "<th>$value</th>";
+            }
+            echo "<tr>";
+        }
+
+        echo "</table>";
+        
+
+
+
+    }
+
 }catch (PDOException  $e ){
     die("ERROR CON LA Columna". $e->getMessage());
  }
