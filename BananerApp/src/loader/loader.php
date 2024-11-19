@@ -44,8 +44,6 @@ remove_duplicates('files/Docentes_Planificados.csv', 'files/Docentes_Planificado
 echo "Docentes_Planificados unicos LISTO\n";
 
 require_once('config/connection.php');
-require_once('create_tables.php');
-require_once('poblate_tables.php');
 
 // Ejecutar el script para sincronizar la tabla de personas
 echo "Sincronizando tabla de personas...\n";
@@ -109,4 +107,7 @@ try {
 
 // Cerrar el archivo CSV
 fclose($csvFile);
+
+require_once('create_tables.php');
+require_once('poblate_tables.php');
 ?>
