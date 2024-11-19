@@ -59,63 +59,77 @@ $condicion = $_POST['condicion'];
  $sql = "SELECT $columna FROM $tabla";
  $parametro = [];
  if (!empty($condicion)){
-
+    $sql .= " WHERE ";
     $oper = '/^([\w]+)\s*(=|>=|<=|>|<|LIKE|IN|IS NULL|IS NOT NULL|EXISTS|NOT EXISTS|BETWEEN)\s*(.+)$/i';
 
-    if (preg_match($oper,$condicion,$matches)){
-
-        var_dump($matches);
-        $colum_condic = $matches[1];
-        $operador = strtoupper(trim($matches[2]));
-        
-        $valorr = trim($matches[3]);
-        
-       
 
 
 
-        if (!in_array($colum_condic,$validos_c)){
+    $condiciones = preg_split("/\s+(AND|OR)\s+/i",$condicion,-1,PREG_SPLIT_DELIM_CAPTURE);
+    $cantidad_condicion = [];
+    $operadores = [];
+
+
+
+    foreach($condiciones as $condi){
+         $condi = trim($condi);
+         if (strtoupper($condi) === 'AND' || strtoupper($condi) === 'OR'){
+            $operadores[] = strtoupper($condi);
+         }elseif (preg_match($oper,$condi,$matches)){
+
+            $colum_condic = $matches[1];
+            $operador = strtoupper(trim($matches[2]));
+            
+            $valorr = trim($matches[3]);
+
+            if (!in_array($colum_condic,$validos_c)){
                 echo($validos_c);
                 die("ERROR COLUMNAa '$colum_condic' No es valida");
             }
 
 
-
-
-        if (in_array($operador,['IN','NOT IN'])){
-            if (!preg_match('/^\(.+\)$/',$valorr)){
-                die("ERROR: operador debe estar entre parentesis");
+            if ($operador === "BETWEEN"){
+                if (preg_match('/^.+\s+AND\s+.+$/i',$valorr,$bw)){
+                    $b1 =   ':valor' . count($parametro);   
+                    $b2 =   ':valor' . (count($parametro)+1);
+                    $cantidad_condicion[] = "$colum_condic $operador $b1 AND $b2";
+                    $parametro[$b1] = trim($bw[1]);
+                    $parametro[$b2] = trim($bw[2]);
             }
-                $sql = "SELECT $columna FROM $tabla WHERE  $colum_condic $operador $valorr";
 
 
-        }elseif (in_array($operador,['IS NULL',' IS NOT NULL'])){
-                if (!empty(($valorr))){
-                    die("ERROR ESTE OPERADOR NO DEBE TENER VALOR");
+            }elseif (in_array($operador,['IN','NOT IN'])){
+                if (!preg_match('/^\(.+\)$/',$valorr)){
+                    die("ERROR: operador debe estar entre parentesis");
                 }
-                $sql = "SELECT $columna FROM $tabla WHERE  $colum_condic $operador";
-        }elseif ($operador === "BETWEEN"){
+                $cantidad_condicion[] =  "$colum_condic $operador $valorr";
 
 
-            if (!preg_match('/^.+\s+AND\s+.+$/i',$valorr)){
-                    die("ERROR CON FORMATO");
+            }elseif (in_array($operador,['IS NULL',' IS NOT NULL'])) {
+                $cantidad_condicion[] = "$colum_condic $operador ";
+            }else{
+
+                $pp = ':valor'. count($parametro);
+                $cantidad_condicion[] =  "$colum_condic $operador $pp";
+                $parametro[$pp] = $valorr;
             }
 
-            $sql = "SELECT $columna FROM $tabla WHERE  $colum_condic $operador :valor";
 
-            $parametro[':valor']  = $valorr;
+         }else{
+            die("ERROR");
+         }
 
-
-
-        } else{
-            $sql =  "SELECT $columna FROM $tabla WHERE  $colum_condic $operador :valor";
-            $parametro[':valor']  = $valorr;
-                
 
     }
-
+    foreach($cantidad_condicion as $i => $subi){
+        if ($i > 0 ){
+            $sql .= " ".array_shift($operadores) . " ";
+        }
+        $sql .= $subi;
     }
 
+
+    
 
     
 
