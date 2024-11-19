@@ -138,12 +138,14 @@ $condicion = $_POST['condicion'];
 
 try{
     $query = $db->prepare($sql);
-    
-    
+    echo "<br>";
 
-
+    echo $sql;
+    echo "<br>";
     foreach($parametro as $clave => $valor){
         $query->bindParam($clave,$valor,PDO::PARAM_STR);
+        echo "<tr>";
+        echo $valor;
     }
         
 
