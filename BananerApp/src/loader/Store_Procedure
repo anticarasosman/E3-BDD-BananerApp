@@ -1,0 +1,66 @@
+CREATE OR REPLACE FUNCTION cargar_notas_acta()
+RETURNS void AS $$
+BEGIN
+    -- Limpiar la tabla temporal acta
+    TRUNCATE TABLE acta;
+
+    -- Insertar datos en la tabla acta
+    INSERT INTO acta (numero_alumno, curso, periodo, nombre_estudiante, nombre_profesor, nota_final)
+    SELECT 
+        n.numero_alumno,
+        n.sigla_curso AS curso,
+        n.periodo_curso AS periodo,
+        CONCAT(e.primer_nombre, ' ', e.primer_apellido) AS nombre_estudiante,
+        CONCAT(p.nombres, ' ', p.apellido_paterno) AS nombre_profesor,
+        CASE
+            WHEN n.calificacion = 'SO' THEN 7.0
+            WHEN n.calificacion = 'MB' THEN 6.5
+            WHEN n.calificacion = 'B' THEN 5.9
+            WHEN n.calificacion = 'SU' THEN 4.9
+            WHEN n.calificacion = 'I' THEN 3.9
+            WHEN n.calificacion = 'M' THEN 2.9
+            WHEN n.calificacion = 'MM' THEN 1.9
+            WHEN n.calificacion = 'P' THEN NULL
+            WHEN n.calificacion = 'NP' THEN NULL
+            WHEN n.calificacion = 'EX' THEN NULL
+            WHEN n.calificacion = 'A' THEN NULL
+            WHEN n.calificacion = 'R' THEN NULL
+            ELSE NULL
+        END AS nota_final
+    FROM notas n
+    JOIN estudiantes e ON n.numero_alumno = e.numero_de_alumno
+    JOIN profesores p ON n.run_profesor = p.run
+    WHERE EXISTS (
+        SELECT 1 FROM cursos c WHERE c.sigla = n.sigla_curso
+    ) AND EXISTS (
+        SELECT 1 FROM estudiantes e WHERE e.numero_de_alumno = n.numero_alumno
+    ) AND EXISTS (
+        SELECT 1 FROM profesores p WHERE p.run = n.run_profesor
+    );
+
+    -- Actualizar las notas finales según las reglas de negocio
+    UPDATE acta
+    SET nota_final = CASE
+        WHEN nota_final IS NULL AND calificacion = 'P' THEN NULL
+        WHEN nota_final IS NULL AND calificacion = 'NP' THEN 0.0
+        WHEN nota_final IS NULL AND calificacion = 'EX' THEN 7.0
+        WHEN nota_final IS NULL AND calificacion = 'A' THEN 7.0
+        WHEN nota_final IS NULL AND calificacion = 'R' THEN 0.0
+        ELSE nota_final
+    END;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE VIEW acta_notas AS
+SELECT 
+    numero_alumno,
+    curso,
+    periodo,
+    nombre_estudiante,
+    nombre_profesor,
+    nota_final
+FROM acta;
+
+--CALL cargar_notas_acta();
+
+--SELECT * FROM acta_notas;

@@ -46,7 +46,7 @@
     echo "Planes unicos LISTO\n";
     remove_duplicates('files/Asignaturas.csv', 'files/Asignaturas_unicas.csv', [1]);
     echo "Asignaturas unicos LISTO\n";
-    remove_duplicates('files/planeacion.csv', 'files/Planeacion_unicos.csv', [5, 13]);
+    remove_duplicates('files/planeación.csv', 'files/Planeacion_unicos.csv', [5, 13]);
     echo "Planeacion unicos LISTO\n";
     remove_duplicates('files/Estudiantes.csv', 'files/Estudiantes_unicos.csv', [3]);
     echo "Estudiantes unicos LISTO\n";
