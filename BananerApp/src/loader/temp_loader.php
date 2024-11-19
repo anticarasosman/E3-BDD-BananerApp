@@ -18,7 +18,7 @@ try {
     die("Error: No se pudo crear la tabla temporal 'acta'. \n" . $e->getMessage());
 }
 
-// Verificar si la tabla temporal 'acta' fue creada
+
 try {
     $result = $db->query("SELECT 1 FROM acta LIMIT 1");
     if ($result !== false) {
@@ -28,7 +28,6 @@ try {
     die("Error: La tabla temporal 'acta' no fue creada. \n" . $e->getMessage());
 }
 
-// Leer el archivo CSV y cargar los datos en la tabla temporal 'acta'
 $csvFile = fopen('files/archivos_E3/notas adivinacion I.csv', 'r');
 if ($csvFile === false) {
     die("No se pudo abrir el archivo CSV.");
@@ -36,11 +35,10 @@ if ($csvFile === false) {
 
 echo "Iniciando la transacción para insertar datos en la tabla temporal 'acta'...\n";
 
-// Iniciar la transacción
 $db->beginTransaction();
 
 try {
-    // Leer y validar los datos del CSV
+
     $lineNumber = 0;
     while (($data = fgetcsv($csvFile, 1000, ";")) !== FALSE) {
         $lineNumber++;
