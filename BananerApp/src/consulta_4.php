@@ -10,12 +10,16 @@
 
 
     
-    <form class="login-form" method="POST" action="consultas/consulta_login.php">
-        <label class="form-label" for="email">Correo electrónico:</label>
-        <input class="form-input" type="email" id="email" name="email" required>
+    <form  method="POST" action="consultas/procesar_consulta.php">
+        <label  for="columnas">Columnas A:</label>
+        <input  type="text" id="columna" name="columna" required>
         
-        <label class="form-label" for="password">Contraseña:</label>
-        <input class="form-input" type="password" id="password" name="password" required>
+
+        <label  for="tabla">Tabla T:</label>
+        <input  type="text" id="tabla" name="tabla" required>
+
+        <label  for="condicion">Condicion C:</label>
+        <input  type="text" id="condicion" name="condicion" required>
         
         <button class="form-button" type="submit">Ingresar</button>
     </form>
