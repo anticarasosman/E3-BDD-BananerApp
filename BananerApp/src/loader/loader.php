@@ -52,11 +52,23 @@ echo "Sincronizando tabla de personas...\n";
 require_once('sync_personas.php');
 echo "TODO LISTO\n";
 
+// Verificar si la tabla temporal 'acta' fue creada
+try {
+    $result = $db->query("SELECT 1 FROM acta LIMIT 1");
+    if ($result !== false) {
+        echo "La tabla temporal 'acta' fue creada correctamente.\n";
+    }
+} catch (Exception $e) {
+    die("Error: La tabla temporal 'acta' no fue creada. " . $e->getMessage());
+}
+
 // Leer el archivo CSV y cargar los datos en la tabla temporal 'acta'
 $csvFile = fopen('archivos_E3/notas adivinacion I.csv', 'r');
 if ($csvFile === false) {
     die("No se pudo abrir el archivo CSV.");
 }
+
+echo "Iniciando la transacción para insertar datos en la tabla temporal 'acta'...\n";
 
 // Iniciar la transacción
 $db->beginTransaction();
@@ -92,7 +104,7 @@ try {
 } catch (Exception $e) {
     // Revertir la transacción en caso de error
     $db->rollBack();
-    echo $e->getMessage();
+    echo "Error al insertar datos: " . $e->getMessage();
 }
 
 // Cerrar el archivo CSV
