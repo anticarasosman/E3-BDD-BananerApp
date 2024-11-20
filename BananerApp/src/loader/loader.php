@@ -28,7 +28,6 @@ function remove_duplicates($input_file, $output_file, $key_columns) {
     }
 }
 
-// Usar la función para eliminar duplicados
 echo "Eliminando duplicados...\n";
 remove_duplicates('files/Prerrequisitos.csv', 'files/Prerrequisitos_unicos.csv', [0]);
 echo "Prerrequisitos unicos LISTO\n";
@@ -36,23 +35,18 @@ remove_duplicates('files/Planes.csv', 'files/Planes_unicos.csv', [0]);
 echo "Planes unicos LISTO\n";
 remove_duplicates('files/Asignaturas.csv', 'files/Asignaturas_unicas.csv', [1]);
 echo "Asignaturas unicos LISTO\n";
-remove_duplicates('files/Planeacion.csv', 'files/Planeacion_unicos.csv', [5, 13]);
+remove_duplicates('files/planeacion.csv', 'files/Planeacion_unicos.csv', [5, 13]);
 echo "Planeacion unicos LISTO\n";
 remove_duplicates('files/Estudiantes.csv', 'files/Estudiantes_unicos.csv', [3]);
 echo "Estudiantes unicos LISTO\n";
-remove_duplicates('files/Docentes_Planificados.csv', 'files/Docentes_Planificados_unicos.csv', [0]);
-echo "Docentes_Planificados unicos LISTO\n";
 
 require_once('config/connection.php');
+require_once('create_tables.php');
+require_once('poblate_tables.php');
 
-// Ejecutar el script para sincronizar la tabla de personas
 echo "Sincronizando tabla de personas...\n";
 require_once('sync_personas.php');
 echo "TODO LISTO\n";
 
-// Cerrar el archivo CSV
 fclose($csvFile);
-
-require_once('create_tables.php');
-require_once('poblate_tables.php');
 ?>
