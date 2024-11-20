@@ -1,7 +1,8 @@
 <?php
 include('config/connection.php');
 
-// Crear la tabla temporal 'acta'
+
+// P.4.1
 try {
     $createTableQuery = "CREATE TEMPORARY TABLE IF NOT EXISTS acta (
         numero_de_alumno INT,
@@ -42,11 +43,11 @@ try {
     $lineNumber = 0;
     while (($data = fgetcsv($csvFile, 1000, ";")) !== FALSE) {
         $lineNumber++;
-        if ($lineNumber == 1) continue; // Saltar la cabecera
+        if ($lineNumber == 1) continue; 
 
         $numero_de_alumno = $data[0];
         if (empty($numero_de_alumno)) {
-            continue; // Ignorar filas donde numero_de_alumno esté vacío
+            continue; 
         }
 
         $run = $data[1];
@@ -56,7 +57,6 @@ try {
         $oportunidad_dic = $data[5];
         $oportunidad_mar = isset($data[6]) && $data[6] !== '' ? str_replace(',', '.', $data[6]) : NULL;
 
-        // Validar las notas
         if ($oportunidad_dic === 'NP' || is_numeric(str_replace(',', '.', $oportunidad_dic))) {
             if ($oportunidad_dic !== 'NP' && floatval(str_replace(',', '.', $oportunidad_dic)) > 4.0 && $oportunidad_mar !== NULL) {
                 throw new Exception("Nota de $numero_de_alumno contiene un valor erróneo en oportunidad_mar, corríjalo manualmente en el archivo de origen y vuelva a cargar.\n");
@@ -88,12 +88,14 @@ try {
     die("Error: No se pudo obtener los datos de la tabla temporal. " . $e->getMessage());
 }
 
-// Mantener la conexión abierta para verificación manual
+// P.4.2
+
+// require_once('create_view.php');
+
 echo "Manteniendo la conexión abierta. Presiona Ctrl+C para salir.\n";
 while (true) {
     sleep(1);
 }
 
-// Cerrar el archivo CSV
 fclose($csvFile);
 ?>
