@@ -47,6 +47,4 @@ require_once('poblate_tables.php');
 echo "Sincronizando tabla de personas...\n";
 require_once('sync_personas.php');
 echo "TODO LISTO\n";
-
-fclose($csvFile);
 ?>
